@@ -4,7 +4,6 @@
 **Ahmad Amaan 	200062
 Himanshu Jindal 	200442**
 					
-**Introduction** 
 BorderPay is used for managing users and contracts, and facilitating financial transactions like salary payments between employers and employees.
 The primary objective is to manage users, handle contracts, and process transactions within a secure blockchain environment. Some other functionalities include user registration, contract creation, salary transactions, and data retrieval.
 
