@@ -1,22 +1,11 @@
-**BorderPay.io – Cross-Border Contractual Payments**
+**BorderPay- Contractual Payments**
 				
 			
 **Ahmad Amaan 	200062
 Himanshu Jindal 	200442**
 					
-**Introduction**
+**Introduction** 
+BorderPay is used for managing users and contracts, and facilitating financial transactions like salary payments between employers and employees.
+The primary objective is to manage users, handle contracts, and process transactions within a secure blockchain environment. Some other functionalities include user registration, contract creation, salary transactions, and data retrieval.
 
-**Frontend**:	
-Technologies used:
-HTML
-Tailwind CSS
-JavaScript
-React
-Yup
-
-**Major Components of Frontend are:**
-Signup/login page - User can signup as employer or employee. Already signed in users can login to their dashboard. Yup library is used for form validation 
-
-Dashboard -  For user signed in as employer. Employers can pay using pay button
-
-Contract page: For user signed in as an employee. He can see the total money he has earned and can sign in  contract. If the contract is already signed, it will display the contract
+Our tech stack consists Frontend technologies  like HTML,React, Tailwind CSS, Backend technologies like Node.js and hyperledger fabric. The smart contract (chaincode) is written in Go.
