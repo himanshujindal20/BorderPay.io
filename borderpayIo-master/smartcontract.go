@@ -13,22 +13,13 @@ type SmartContract struct {
 	contractapi.Contract
 }
 
-// Asset describes basic details of what makes up a simple asset
-// Insert struct field in alphabetic order => to achieve determinism across languages
-// golang keeps the order when marshal to json but doesn't order automatically
-// type Asset struct {
-// 	AppraisedValue int    `json:"AppraisedValue"`
-// 	Color          string `json:"Color"`
-// 	ID             string `json:"ID"`
-// 	Owner          string `json:"Owner"`
-// 	Size           int    `json:"Size"`
-// }
 
 type User struct {
 	ID       string `json:"ID"`
 	Password string `json:"Password"`
 	Acc_Type string `json:"Acc_Type"`
 	Money    string `json:"Money"`
+	Typo     string `json:"Typo"`
 }
 
 type Contract struct {
@@ -37,17 +28,18 @@ type Contract struct {
 	Employee_ID string `json:"Employee_ID"`
 	Salary      string `json:"Salary"`
 	Is_Running  string `json:"Is_Running"`
+	Typo        string `json:"Typo"`
 }
 
 // InitLedger adds a base set of assets to the ledger
 func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
 	users := []User{
-		{ID: "user1",  Password: "pass1", Acc_Type: "Employer", Money: "54"},
-		{ID: "user2",  Password: "pass2", Acc_Type: "Employee", Money: "5454"},
+		{ID: "user1",  Password: "pass1", Acc_Type: "Employer", Money: "54", Typo: "User"},
+		{ID: "user2",  Password: "pass2", Acc_Type: "Employee", Money: "5454", Typo: "User"},
 	}
 
 	contracts := []Contract{
-		{ID: "user1user2",  Employer_ID: "user1", Employee_ID: "user2", Salary: "5", Is_Running: "0"},
+		{ID: "user1user2",  Employer_ID: "user1", Employee_ID: "user2", Salary: "5", Is_Running: "0", Typo : "Contract"},
 	}
 
 	for _, user := range users {
@@ -92,6 +84,7 @@ func (s *SmartContract) CreateUser(ctx contractapi.TransactionContextInterface, 
 		Acc_Type: acc_type,
 		Password: password,
 		Money:    money,
+		Typo:     "User",
 	}
 	userJSON, err := json.Marshal(user)
 	if err != nil {
@@ -117,6 +110,7 @@ func (s *SmartContract) CreateContract(ctx contractapi.TransactionContextInterfa
 		Employee_ID: employee_id,
 		Salary:      salary,
 		Is_Running:  is_running,
+		Typo:        "Contract",
 	}
 	contractJSON, err := json.Marshal(contract)
 	if err != nil {
@@ -292,59 +286,9 @@ func (s *SmartContract) ContractExists(ctx contractapi.TransactionContextInterfa
 	return contractJSON != nil, nil
 }
 
-// // TransferAsset updates the owner field of asset with given id in world state, and returns the old owner.
-// func (s *SmartContract) TransferAsset(ctx contractapi.TransactionContextInterface, id string, newOwner string) (string, error) {
-// 	asset, err := s.ReadAsset(ctx, id)
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	oldOwner := asset.Owner
-// 	asset.Owner = newOwner
-
-// 	assetJSON, err := json.Marshal(asset)
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	err = ctx.GetStub().PutState(id, assetJSON)
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	return oldOwner, nil
-// }
-
-// // GetAllAssets returns all assets found in world state
-// func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface) ([]*Asset, error) {
-// 	// range query with empty string for startKey and endKey does an
-// 	// open-ended query of all assets in the chaincode namespace.
-// 	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer resultsIterator.Close()
-
-// 	var assets []*Asset
-// 	for resultsIterator.HasNext() {
-// 		queryResponse, err := resultsIterator.Next()
-// 		if err != nil {
-// 			return nil, err
-// 		}
-
-// 		var asset Asset
-// 		err = json.Unmarshal(queryResponse.Value, &asset)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		assets = append(assets, &asset)
-// 	}
-
-// 	return assets, nil
-// }
 
 // GetAllAssets returns all assets found in world state
-func (s *SmartContract) GetAllContracts(ctx contractapi.TransactionContextInterface) ([]interface{}, error) {
+func (s *SmartContract) GetAllContracts(ctx contractapi.TransactionContextInterface) ([]*Contract, error) {
 	// range query with empty string for startKey and endKey does an
 	// open-ended query of all assets in the chaincode namespace.
 	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
@@ -354,7 +298,7 @@ func (s *SmartContract) GetAllContracts(ctx contractapi.TransactionContextInterf
 	defer resultsIterator.Close()
 
 	// var contracts []*Contract
-	var result []interface{}
+	var contracts []*Contract
 
 	for resultsIterator.HasNext() {
 		queryResponse, err := resultsIterator.Next()
@@ -363,10 +307,41 @@ func (s *SmartContract) GetAllContracts(ctx contractapi.TransactionContextInterf
 		}
 
 		fmt.Println("xyz")
-		var value interface{}
-		_ = json.Unmarshal(queryResponse.Value, &value)
-		result = append(result, &value)
+		var contract Contract
+		_ = json.Unmarshal(queryResponse.Value, &contract)
+		if contract.Typo == "Contract" {
+			contracts = append(contracts, &contract)
+		}
 	}
 
-	return result, nil
+	return contracts, nil
+}
+
+func (s *SmartContract) GetAllUsers(ctx contractapi.TransactionContextInterface) ([]*User, error) {
+	// range query with empty string for startKey and endKey does an
+	// open-ended query of all assets in the chaincode namespace.
+	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	// var contracts []*Contract
+	var users []*User
+
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+
+		fmt.Println("xyz")
+		var user User
+		_ = json.Unmarshal(queryResponse.Value, &user)
+		if user.Typo == "User" {
+			users = append(users, &user)
+		}
+	}
+
+	return users, nil
 }
