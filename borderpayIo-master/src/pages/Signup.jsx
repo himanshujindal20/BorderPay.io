@@ -8,7 +8,7 @@ const Signup = () => {
   const [signupError, setSignupError] = useState("");
 
   const schema = yup.object({
-    username: yup.string().username().required("username is required"),
+    username: yup.string().required("username is required"),
     password: yup.string().min(4).max(20).required("Password is required"),
     cpassword: yup.string().oneOf([yup.ref("password"), null], "Password and Confirm Password should be same"),
     currency: yup.string().required("Currency is required")
