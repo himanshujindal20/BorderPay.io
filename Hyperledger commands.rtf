@@ -1,0 +1,27 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red1\green1\blue1;\red83\green83\blue83;}
+{\*\expandedcolortbl;;\cssrgb\c392\c392\c392;\cssrgb\c40000\c40000\c40000;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww20180\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 \expnd0\expndtw0\kerning0
+				TESTING NETWORK\
+\
+> Bring up network: \cf3 ./\cf2 network\cf3 .\cf2 sh up\
+\
+> Create channel: \cf3 ./\cf2 network\cf3 .\cf2 sh createChannel \cf3 -\cf2 c channel1\
+\
+> Starting chain code: \cf3 ./\cf2 network\cf3 .\cf2 sh deployCC \cf3 -\cf2 ccn basic \cf3 -\cf2 ccp \cf3 ../\cf2 asset\cf3 -\cf2 transfer\cf3 -\cf2 basic\cf3 /\cf2 chaincode\cf3 -\cf2 go -c channel1 \cf3 -\cf2 ccl go\
+\
+> Interacting with env: export PATH=$\{PWD\}/../bin:$PATH\
+export FABRIC_CFG_PATH=$PWD/../config/\
+\
+> Env variables for org1: export CORE_PEER_TLS_ENABLED=true\
+export CORE_PEER_LOCALMSPID="Org1MSP"\
+export CORE_PEER_TLS_ROOTCERT_FILE=$\{PWD\}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt\
+export CORE_PEER_MSPCONFIGPATH=$\{PWD\}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp\
+export CORE_PEER_ADDRESS=localhost:7051\
+\
+\cf2 >Bring down network: \cf3 ./\cf2 network\cf3 .\cf2 sh down}
